@@ -4,14 +4,15 @@
  */
 var isPalindrome = function (s) {
   /**
-    한 바퀴 순회 돌면서, 가공 후, 두 가지 방면으로 수집
-    가공: 숫자, 문자(소문자화)만 남기기
-    수집 1: 오름차순으로
-    수집 2: 내림차순으로
-    순회 종료이후, 수집 1과 수집 2가 같다면 Palindrome 임
+    투 포인터
+
+    문자열 s의 양 끝단을 가리키는 포인터 2개 사용
+    포인터가 엇갈리기 시작하면 반복 종료
+    포인터를 이동시키는 것은 문자나 숫자가 아닐 경우 각 포인터의 방향으로 한 칸씩 이동
+    문자나 숫자임에도 불구하고 두 포인터가 가리키는 문자열이 같지 않다면 Palindrome이 아님
    */
-  let collect1 = "";
-  let collect2 = "";
+  let left = 0;
+  let right = s.length - 1;
 
   function isAlphanumeric(char) {
     const codePoint = char.codePointAt(0);
@@ -27,14 +28,27 @@ var isPalindrome = function (s) {
     return false;
   }
 
-  for (const char of s) {
-    const convertedToLowerCase = char.toLowerCase();
+  while (left <= right) {
+    const leftCharConvertedToLowerCase = s[left].toLowerCase();
+    const rightCharConvertedToLowerCase = s[right].toLowerCase();
 
-    if (isAlphanumeric(convertedToLowerCase)) {
-      collect1 = collect1 + convertedToLowerCase;
-      collect2 = convertedToLowerCase + collect2;
+    if (!isAlphanumeric(leftCharConvertedToLowerCase)) {
+      left += 1;
+      continue;
     }
+
+    if (!isAlphanumeric(rightCharConvertedToLowerCase)) {
+      right -= 1;
+      continue;
+    }
+
+    if (leftCharConvertedToLowerCase !== rightCharConvertedToLowerCase) {
+      return false;
+    }
+
+    left += 1;
+    right -= 1;
   }
 
-  return (collect1 === collect2) ? true : false;
+  return true;
 };
